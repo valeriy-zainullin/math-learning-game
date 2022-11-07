@@ -1,0 +1,27 @@
+<html>
+	<head>
+		<title>Игра для запоминания формулировок</title>
+	</head>
+	<body>
+		<h5 id="heading">Вы закончили %d кругов. Хотите ещё один?</h5>
+		<a id="link"><button>Да, хочу ещё один</button></a>
+		<script>
+		function extract_parameters() {
+			let url = new URL(window.location);
+			let params = new URLSearchParams(url.search);
+			// May add "subject" in the future in case it helps and I'll use it in the next semester. It'd affect the json values are obtained from. And store number of rounds for each subject as cookies.
+			return {
+				"round": params.get("round"),
+				"question": params.get("question")
+			};
+		};
+
+		let parameters = extract_parameters();
+		let round = Number(parameters["round"]);
+
+		document.getElementById("heading").innerHTML = "Вы закончили "+(round+1).toString()+" кругов. Хотите ещё один?";
+		document.getElementById("link").href = "game.html?round="+(round+1).toString()+"&question=0";
+
+		</script>
+	</body>
+</html>

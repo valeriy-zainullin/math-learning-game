@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Игра для запоминания формулировок</title>
+	<script type="text/javascript" src="analysis-3sem.js"></script>
+	<script>
+		window.MathJax = {
+		  tex: {
+		    inlineMath: [['$', '$'], ['\\(', '\\)']]
+		  },
+		  svg: {
+		    fontCache: 'global'
+		  }
+		};
+	</script>
+	<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+	<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+	<style>
+		@-webkit-keyframes fadeIn { 
+		  0% { opacity: 0.25; }
+		  100% { opacity: 1; }
+		}
+
+		@keyframes fadeIn {
+		  0% { opacity: 0.25; }
+		  100% { opacity: 1; }
+		}
+
+		.placed-word-delete {
+			opacity: 25%;
+		}
+
+		.placed-word-delete:hover {
+			-webkit-animation-name: fadeIn;
+		  	-webkit-animation-duration: 0.6s;
+		 	 animation-name: fadeIn;
+		 	 animation-duration: 0.6s;
+		 	 animation-fill-mode: forwards;
+		}
+	</style>
+</head>
+<body>
+	<h4>Теорема Лебега о переходе к пределу в интеграле Лебега</h4>
+	<div><img id="feedback-emoji" src="sand-clocks.png" style="height: 20px;" /></div>
+	<br/>
+	<div id="placed_words"></div>
+	<div id="choices"></div>
+	<button id="next-question-btn" style="display: none; margin: 0 auto;" onclick="next_question();">Дальше</button>
+	<script>
+		function extract_parameters() {
+			let url = new URL(window.location);
+			let params = new URLSearchParams(url.search);
+			// May add "subject" in the future in case it helps and I'll use it in the next semester. It'd affect the json values are obtained from. And store number of rounds for each subject as cookies.
+			return {
+				"round": params.get("round"),
+				"question": params.get("question")
+			};
+		};
+
+		let parameters = extract_parameters();
+		let round = Number(parameters["round"]);
+		let question = Number(parameters["question"]);
+
+		// Если несколько предметов, здесь выбирать тот, который сейчас должен обрабатываться.
+		let data = analysis_3sem;
+
+		if (question == data.length) {
+			window.location.replace("./done.html?round="+round.toString());
+		}
+
+		let question_name = data[question][0];
+		let question_words = data[question][1];
+
+		var words_placed = [];
+		var words_available = question_words.slice().sort();
+
+		function generate_placed_word_html(word) {
+			let placed_word_index = words_placed.length - 1;
+			return "<span id=\"placed-word-"+placed_word_index.toString()+"\">"+word+" <a href=\"\" onclick=\"try { unplace_words_starting_from("+placed_word_index.toString()+"); } catch (e) {console.log(e);}; return false;\"><img src=\"cross.png\" class=\"placed-word-delete\" style=\"vertical-align: middle; height: 14px;\"></a></span>";
+		}
+
+		function check_arrays_equal(lhs, rhs) {
+			console.log(lhs);
+			console.log(rhs);
+			if (lhs.length != rhs.length) {
+				return false;
+			}
+
+			for (i = 0; i < lhs.length; ++i) {
+				if (lhs[i] != rhs[i]) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		let status_emoji_element = document.getElementById("feedback-emoji");
+		function update_status_emoji() {
+			if (words_available.length != 0) {
+				status_emoji_element.src = "sand-clocks.png";
+			} else if (!check_arrays_equal(words_placed, question_words)) {
+				status_emoji_element.src = "sad.png";
+			} else {
+				status_emoji_element.src = "happy.png";
+			}
+		}
+
+		function hide_crosses() {
+			let elements = document.getElementsByClassName("placed-word-delete");
+			for (i = 0; i < elements.length; ++i) {
+				elements[i].style.display = "none";
+			}
+		}
+
+		function next_question() {
+			window.location.replace("game.html?round="+round.toString()+"&question="+(question + 1).toString());
+		}
+
+		let next_question_btn = document.getElementById("next-question-btn");
+		function show_next_question_btn() {
+			next_question_btn.style.display = "block";
+		}
+
+		let placed_words_area = document.getElementById("placed_words");
+		function place_word(index) {
+			let word = words_available[index];
+			words_available.splice(index, 1);
+			words_placed.push(word);
+
+			rebuild_available_words_area();
+
+			placed_words_area.innerHTML += generate_placed_word_html(word);
+
+			MathJax.typeset();
+
+			update_status_emoji();
+			console.log(words_available.length);
+			console.log(check_arrays_equal(words_placed, question_words));
+			if (words_available.length == 0 && check_arrays_equal(words_placed, question_words)) {
+				hide_crosses();
+				show_next_question_btn();
+			}
+		}
+
+		function unplace_words_starting_from(index) {
+			let num_placed_words = words_placed.length;
+			for (i = index; i < num_placed_words; ++i) {
+				document.getElementById("placed-word-"+i.toString()).remove();
+				words_available.push(words_placed[i]);
+			}
+			words_placed.splice(index, words_placed.length - index);
+			words_available.sort();
+			rebuild_available_words_area();
+			update_status_emoji();
+		}
+
+		function generate_available_word_btn_html(index) {
+			return "<button onclick=\"place_word("+index.toString()+");\">"+words_available[index]+"</button>";
+		}
+
+		let available_words_area = document.getElementById("choices");
+		function rebuild_available_words_area() {
+			var html = "";
+			for (i = 0; i < words_available.length; ++i) {
+				html += generate_available_word_btn_html(i);
+			}
+			available_words_area.innerHTML = html;
+		}
+
+		rebuild_available_words_area();
+	</script>
+
+	<br/>
+	<br/>
+	<br/>
+	<br/>	
+	<a href="https://www.flaticon.com/ru/free-icons/" title="печальный иконки">Печальный иконки от Vectors Market - Flaticon</a>
+	<a target="_blank" href="https://icons8.com/icon/T9nkeADgD3z6/крестик">Крестик</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+</body>
+</html>
