@@ -41,7 +41,7 @@
 	</style>
 </head>
 <body>
-	<h4>Теорема Лебега о переходе к пределу в интеграле Лебега</h4>
+	<h4 id="question-name"></h4>
 	<div><img id="feedback-emoji" src="sand-clocks.png" style="height: 20px;" /></div>
 	<br/>
 	<div id="placed_words"></div>
@@ -60,7 +60,7 @@
 
 		let parameters = extract_parameters();
 		let round = Number(parameters["round"]);
-		let question = Number(parameters["question"]);
+		let question = Number(parameters["question"]);		
 
 		// Если несколько предметов, здесь выбирать тот, который сейчас должен обрабатываться.
 		let data = analysis_3sem;
@@ -71,6 +71,9 @@
 
 		let question_name = data[question][0];
 		let question_words = data[question][1];
+
+		let question_name_element = document.getElementById("question-name");
+		question_name_element.innerHTML = question_name;
 
 		var words_placed = [];
 		var words_available = question_words.slice().sort();
