@@ -154,6 +154,7 @@
 			words_available.sort();
 			rebuild_available_words_area();
 			update_status_emoji();
+			MathJax.typeset();
 		}
 
 		function generate_available_word_btn_html(index) {
@@ -168,6 +169,7 @@
 				html += generate_available_word_btn_html(i);
 			}
 			available_words_area.innerHTML = html;
+			MathJax.typeset();
 		}
 
 		rebuild_available_words_area();
