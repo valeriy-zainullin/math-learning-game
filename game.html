@@ -162,7 +162,7 @@
 
 		function generate_available_word_btn_html(index) {
 			// Difficult to tap with a finger on my phone.
-			return "<button style=\"height: 40px; min-width: 40px;\" onclick=\"place_word("+index.toString()+");\">"+words_available[index]+"</button>&nbsp;&nbsp;";
+			return "<button style=\"vertical-align: top; min-height: 40px; min-width: 40px; margin-bottom: 20px;\" onclick=\"place_word("+index.toString()+");\">"+words_available[index]+"</button>&nbsp;&nbsp;";
 		}
 
 		let available_words_area = document.getElementById("choices");
