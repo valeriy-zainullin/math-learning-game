@@ -4,6 +4,7 @@
 	<title>Игра для запоминания формулировок</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
 	<script type="text/javascript" src="analysis-3sem.js"></script>
+	<script type="text/javascript" src="prob_and_meas_theory_3sem.js"></script>
 	<script>
 		window.MathJax = {
 		  tex: {
@@ -46,6 +47,8 @@
 	<br/>
 	<div id="placed_words" style="margin-bottom: 20px;"></div>
 	<div id="choices"></div>
+	<!--<button id="show-proof">Посмотреть доказательство</button>-->
+	<!--<button id="try-to-proof-in-lean-btn">Попробовать доказать в lean</button>-->
 	<button id="next-question-btn" style="display: none; margin: 0 auto;" onclick="next_question();">Дальше</button>
 	<script>
 		function extract_parameters() {
@@ -53,6 +56,7 @@
 			let params = new URLSearchParams(url.search);
 			// May add "subject" in the future in case it helps and I'll use it in the next semester. It'd affect the json values are obtained from. And store number of rounds for each subject as cookies.
 			return {
+				"subject": params.get("subject"),
 				"round": params.get("round"),
 				"question": params.get("question")
 			};
@@ -60,13 +64,22 @@
 
 		let parameters = extract_parameters();
 		let round = Number(parameters["round"]);
-		let question = Number(parameters["question"]);		
+		let question = Number(parameters["question"]);
+		let subject = parameters["subject"];
+
+		function get_subject_data(subject) {
+			if (subject === "analysis_3sem" || subject == "prob_and_meas_theory_3sem") {
+				return eval(subject);
+			} else {
+				return [];
+			}
+		}
 
 		// Если несколько предметов, здесь выбирать тот, который сейчас должен обрабатываться.
-		let data = analysis_3sem;
+		let data = get_subject_data(subject);
 
 		if (question == data.length) {
-			window.location.replace("./done.html?round="+round.toString());
+			window.location.replace("./done.html?subject="+subject+"&round="+round.toString());
 		}
 
 		let question_name = data[question][0];
@@ -121,7 +134,7 @@
 		}
 
 		function next_question() {
-			window.location.replace("game.html?round="+round.toString()+"&question="+(question + 1).toString());
+			window.location.replace("game.html?subject="+subject+"&round="+round.toString()+"&question="+(question + 1).toString());
 		}
 
 		let next_question_btn = document.getElementById("next-question-btn");
