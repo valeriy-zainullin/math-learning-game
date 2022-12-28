@@ -74,10 +74,10 @@ let analysis_3sem = [
 	[
 		"Теорема Фату",
 		["если", "мера", "$E$", "конечна", ",", "$\\{f_n\\}_{n = 1}^\\infty$", "измеримы",
-			"на", "$E$", ",", "$f_m(x) \\geqslant 0$", "для", "любого", "$m \\in \\mathbb{N}$",
-			"почти", "всюду", "на", "E", ",", "$\\lim\\limits_{m \\to \\infty} f_m(x) = f(x)$",
-			"почти", "всюду", "на", "E", ",", "тогда",
-			"$\\int\\limits_E f(x) d\\mu(x) \\leqslant \\underline{\\lim}\\limits_{m \\to \\infty} \\int\\limits_E f_m(x) d\\mu(x)$"
+			"на", "$E$", ",", "$\\lim\\limits_{n \\to \\infty} f_n(x) = f(x)$", "почти",
+			"всюду", "на", "$E$", ",", "$f_n(x) \\geqslant 0$", "для", "любого",
+			"$n \\in \\mathbb{N}$", "почти", "всюду", "на", "$E$", ",", "тогда",
+			"$\\int\\limits_E f(x) d\\mu(x) \\leqslant \\underline{\\lim}\\limits_{n \\to \\infty} \\int\\limits_E f_n(x) d\\mu(x)$"
 		]
 	],
 	// Вспомнить для себя определения понятий предела множества.
