@@ -86,11 +86,11 @@ let analysis_3sem = [
 		["если", "$\\mu(E) = +\\infty$", ",", "$f$", "измерима", "и", "неотрицательна",
 			"на", "$E$", ",", "тогда", "для", "любых", "двух", "неубывающих",
 			"последовательностей", "множеств", "конечной", "меры",
-			"$\\{ E_m \\}_{m = 1}^\\infty$", ",", "$\\{ E_m' \\}_{m = 1}^\\infty$", ",",
-			"для", "которых", "верно", ",", "что",
-			"$\\lim\\limits_{m \\to \\infty} E_m = \\lim\\limits_{m \\to \\infty} E'_m = E$",
-			",",
-			"$\\lim\\limits_{m \\to \\infty} \\int\\limits_{E_m} f(x) d\\mu(x) = \\lim\\limits_{m \\to \\infty} \\int\\limits_{E'_m} f(x) d\\mu(x)$"
+			"$\\{ E_n \\}_{n = 1}^\\infty$", ",", "$\\{ E_n' \\}_{n = 1}^\\infty$", ",",
+			"для", "которых",
+			"$\\lim\\limits_{n \\to \\infty} E_n = \\lim\\limits_{n \\to \\infty} E'_n = E$",
+			",", "верно", ",", "что",
+			"$\\lim\\limits_{n \\to \\infty} \\int\\limits_{E_n} f(x) d\\mu(x) = \\lim\\limits_{n \\to \\infty} \\int\\limits_{E'_n} f(x) d\\mu(x)$"
 		]
 	],
 	[
