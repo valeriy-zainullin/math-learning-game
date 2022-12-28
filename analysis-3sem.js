@@ -66,9 +66,9 @@ let analysis_3sem = [
 	[
 		"Теорема Леви о монотонной сходимости",
 		["если", "мера", "$E$", "конечна", ",", "$\\{f_n\\}_{n = 1}^\\infty$", "измеримы", "и", "неотрицательны",
-			"на", "$E$", ",", "$\\{f_m(x)\\}_{m = 1}^\\infty$", "неубывающая", "почти", "всюду", "на",
+			"на", "$E$", ",", "$\\{f_n(x)\\}_{n = 1}^\\infty$", "неубывающая", "почти", "всюду", "на",
 			"$E$", ",", "тогда",
-			"$\\int\\limits_E \\lim\\limits_{m \\to \\infty} f_m(x) d\\mu(x) = \\lim\\limits_{m \\to \\infty} \\int\\limits_E f_m(x) d\\mu(x)$"
+			"$\\int\\limits_E \\lim\\limits_{n \\to \\infty} f_n(x) d\\mu(x) = \\lim\\limits_{n \\to \\infty} \\int\\limits_E f_n(x) d\\mu(x)$"
 		]
 	],
 	[
