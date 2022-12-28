@@ -3,6 +3,7 @@
 <head>
 	<title>Игра для запоминания формулировок</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+	<meta charset="UTF-8">
 	<script type="text/javascript" src="analysis-3sem.js"></script>
 	<script type="text/javascript" src="prob_and_meas_theory_3sem.js"></script>
 	<script>
@@ -177,7 +178,7 @@
 		}
 
 		function generate_available_word_btn_html(index) {
-			// Difficult to tap with a finger on my phone.
+			// Difficult to tap with a finger on my phone otherwise.
 			return "<button style=\"vertical-align: top; min-height: 40px; min-width: 40px; margin-bottom: 20px;\" onclick=\"place_word("+index.toString()+");\">"+words_available[index]+"</button>&nbsp;&nbsp;";
 		}
 
