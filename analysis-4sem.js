@@ -141,5 +141,19 @@ let analysis_4sem = [
 		]
 	],
 
+	// Лекция 3.
+	[
+		"Условие Гёльдера",
+		["пусть", "$f: X \\to \\mathbb{R}$", ",", "$X \\subset \\mathbb{R}$", ",",
+			"$x_0 \\in X$", ";", "$f$", "удовлетворяет", "условию", "Гёльдера",
+			"порядка", "$\\alpha$", "в", "точке", "$x_0$", ",", "если", "существуют",
+			"пределы", "$\\lim_{t \\to +0} f(x_0 + t)$", "и", "$\\lim_{t \\to -0} f(x_0 + t)$",
+			"(односторонние пределы в точке)", "и", "$(\\exists C > 0, \\delta > 0)$",
+			"$(\\forall t: 0 < t < \\delta)$",
+			"$\\mathopen{}\\left|f(x+t) - \\lim_{t \\to +0} f(x+t)\\right|\\mathclose{} \\leqslant C t^\\alpha$",
+			"$\\land$",
+			"$\\mathopen{}\\left|f(x+t) - \\lim_{t \\to -0} f(x+t)\\right|\\mathclose{} \\leqslant C t^\\alpha$",
+		]
+	],
 
 ];

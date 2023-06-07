@@ -8,6 +8,7 @@
 	<script type="text/javascript" src="prob_and_meas_theory_3sem.js"></script>
 	<script type="text/javascript" src="analysis-4sem.js"></script>
 	<script type="text/javascript" src="diff-equations-4sem.js"></script>
+	<script type="text/javascript" src="analysis-4sem-ext.js"></script>
 	<script>
 		window.MathJax = {
 		  tex: {
@@ -71,7 +72,7 @@
 		let subject = parameters["subject"];
 
 		function get_subject_data(subject) {
-			let allowed_subjects = ["analysis_3sem", "prob_and_meas_theory_3sem", "analysis_4sem", "diff_equations_4sem"];
+			let allowed_subjects = ["analysis_3sem", "prob_and_meas_theory_3sem", "analysis_4sem", "analysis_4sem_ext", "diff_equations_4sem"];
 			if (allowed_subjects.indexOf(subject) != -1) {
 				return eval(subject);
 			} else {
