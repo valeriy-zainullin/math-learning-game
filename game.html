@@ -43,6 +43,10 @@
 		 	 animation-duration: 0.6s;
 		 	 animation-fill-mode: forwards;
 		}
+
+		.underlined-word .content {
+			border-bottom: 2px solid black;
+		}
 	</style>
 </head>
 <body>
@@ -98,12 +102,16 @@
 
 		function generate_placed_word_html(word) {
 			let placed_word_index = words_placed.length - 1;
-			return "<span id=\"placed-word-"+placed_word_index.toString()+"\">"+word+" <a href=\"\" onclick=\"try { unplace_words_starting_from("+placed_word_index.toString()+"); } catch (e) {console.log(e);}; return false;\"><img src=\"cross.png\" class=\"placed-word-delete\" style=\"vertical-align: middle; height: 14px;\"></a></span>";
+			return "<span id=\"placed-word-"+placed_word_index.toString()+"\"><span class=\"content\">"+word+"</span> <a href=\"\" style=\"text-decoration: none;\" onclick=\"try { unplace_words_starting_from("+placed_word_index.toString()+"); } catch (e) {console.log(e);}; return false;\"><img src=\"cross.png\" class=\"placed-word-delete\" style=\"vertical-align: middle; height: 14px;\"> </a></span>";
+		}
+
+		function underline_word(placed_word_index) {
+			document.getElementById("placed-word-" + placed_word_index.toString()).classList.add("underlined-word");
 		}
 
 		function check_arrays_equal(lhs, rhs) {
 			if (lhs.length != rhs.length) {
-				return false;
+				return -2;
 			}
 
 			// Will only log for cases when all words were already placed. Because the rhs is always question_words.
@@ -113,18 +121,18 @@
 			
 			for (i = 0; i < lhs.length; ++i) {
 				if (lhs[i] != rhs[i]) {
-					return false;
+					return i;
 				}
 			}
 
-			return true;
+			return -1;
 		}
 
 		let status_emoji_element = document.getElementById("feedback-emoji");
-		function update_status_emoji() {
+		function update_status_emoji(is_correct) {
 			if (words_available.length != 0) {
 				status_emoji_element.src = "sand-clocks.png";
-			} else if (!check_arrays_equal(words_placed, question_words)) {
+			} else if (!is_correct) {
 				status_emoji_element.src = "sad.png";
 			} else {
 				status_emoji_element.src = "happy.png";
@@ -159,12 +167,22 @@
 
 			MathJax.typeset();
 
-			update_status_emoji();
 			console.log(words_available.length);
-			console.log(check_arrays_equal(words_placed, question_words));
-			if (words_available.length == 0 && check_arrays_equal(words_placed, question_words)) {
-				hide_crosses();
-				show_next_question_btn();
+
+			if (words_available.length == 0) {
+				let difference_pos = check_arrays_equal(words_placed, question_words);
+				let is_correct = difference_pos === -1;
+
+				update_status_emoji(is_correct);
+
+				if (is_correct) {
+					hide_crosses();
+					show_next_question_btn();
+				} else {
+					underline_word(difference_pos);
+				}
+			} else {
+				update_status_emoji(false);
 			}
 		}
 
@@ -177,7 +195,7 @@
 			words_placed.splice(index, words_placed.length - index);
 			words_available.sort();
 			rebuild_available_words_area();
-			update_status_emoji();
+			update_status_emoji(false);
 			MathJax.typeset();
 		}
 
