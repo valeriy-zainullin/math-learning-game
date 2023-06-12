@@ -76,7 +76,7 @@
 		let subject = parameters["subject"];
 
 		function get_subject_data(subject) {
-			let allowed_subjects = ["analysis_3sem", "prob_and_meas_theory_3sem", "analysis_4sem", "analysis_4sem_ext", "diff_equations_4sem"];
+			let allowed_subjects = ["analysis_3sem", "prob_and_meas_theory_3sem", "analysis_4sem", "analysis_4sem_ext", "diff_equations_4sem", "prob_theory"];
 			if (allowed_subjects.indexOf(subject) != -1) {
 				return eval(subject);
 			} else {
