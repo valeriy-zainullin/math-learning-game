@@ -46,7 +46,7 @@ let analysis_4sem = [
 			"Докажем, что для $f \\in L_1[a, b]$ выполнено $\\lim_{t \\to 0+} \\int_a^{b - t} | f(x + t) - f(x) | d\\mu(x) = 0$, т.е.",
 			"$(\\forall \\varepsilon > 0)$ $(\\exists \\delta > 0)$ $(\\forall t \\in (0; \\delta))$",
 			"$\\int_a^{b - t} | f(x + t) - f(x) | d\\mu(x) < \\varepsilon$.",
-			"По лемме о замыкании множества финитных функций $(\\exists g \\in C^1[a, b])$",
+			"По лемме о замыкании множества непрерывных финитных функций (лемма говорит о непрерывных на всей прямой и $L_1(R)$, но можно нашу доопределить нулем, тогда функция в $L_1(\\mathbb{R})$, та же непрерывная подойдет: непрерывная всюду на отрезке тоже непрерывна, интеграл неотрицательной по всей прямой не меньше интеграла по отрезку) $(\\exists g \\in C^1[a, b])$",
 			"${\\| f - g \\|}_{L_1[a, b]} = \\int_a^b | f(x) - g(x) | d\\mu(x) < \\frac{\\varepsilon}{3}$.",
 			
 			"По теореме Кантора о равномерной непрерывности, т.к. $g \\in C^1[a, b]$,",
@@ -159,16 +159,75 @@ let analysis_4sem = [
 	],*/
 
 	[
-		"Лемма о стремлении у нулю коэффициентов Фурье функции-свертки",
+		"Лемма о равномерном стремлении к нулю коэффициентов Фурье функции-свертки",
 		[
 			// $g: ?? \\to ??$
-			"Если $f \\in L_{2 \\pi}$, $g$ -- измеримая, "
+			"Если", "$f \\in L_{2 \\pi}$", ",", "$g$ -- измерима", ",", "$2\\pi$-периодична", "и", "ограничена", ",",
+			"$\\chi(x, t)$", "$=$", "$f(x + t) g(t)$", ",", "$a_n(x)$", ",", "$b_n(x)$",
+			"-- коэффициенты Фурье функции $h_x(t) = f(x + t) g(t)$ (последовательность функций, выдающих в кажой точке $n$-ый коэффициент Фурье свертки при заданном $x$), тогда $a_n$ и $b_n$ стремятся к тождественному",
+			"нулю равномерно на $[-\\pi, \\pi]$"
+		]
+	],
+	[
+		"Доказательство",
+		[
+			"Хотим доказать: $(\\forall \\varepsilon > 0) (\\exists N \\in \\mathbb{N}) (\\forall n > N) (\\forall x \\in [-\\pi, \\pi]) | a_n(x) - 0 | < \\varepsilon$",
+			"и аналогичное для $b_n$.",
+			"Обозначим $w(h, x) =$",
+			"$\\int_{-\\pi}^{\\pi} | g_x(t + h) - g_x(t) | d\\mu(t)$,",
+			"$w(\\delta, x) = \\sup_{0 \\leqslant h \\leqslant \\delta}$",
+			"$\\int_{-\\pi}^{\\pi} | \\chi(x, t + h) - \\chi(x, t) | d\\mu(t)$.",
+			"Оценим $a_n$ и $b_n$: $a_n(x) = \\frac{1}{\\pi} \\int_{-\\pi}^{\\pi} g_x(t) \\cos(nt) d\\mu(t) =$",
+			"$\\frac{1}{\\pi} \\int_{-\\pi}^{\\pi} \\chi(x, t) \\cos(nt) d\\mu(t)$;",
+			"сделаем замену $t = u + \\frac{\\pi}{n}$:",
+			"$\\frac{1}{\\pi}$",
+			"$\\int_{-\\pi - \\frac{\\pi}{n}}^{\\pi - \\frac{\\pi}{n}} \\chi\\mathopen{}\\left(x, u + \\frac{\\pi}{n} \\right)\\mathclose{} \\cos(nu + \\pi) d\\mu(u)$",
+			"$=$",
+			"$\\frac{1}{\\pi}$",
+			"$-\\int_{-\\pi}^{\\pi} \\chi\\mathopen{}\\left(x, u + \\frac{\\pi}{n} \\right)\\mathclose{} \\cos(nu) d\\mu(u)$",
+			"(", "границы", "интегрирования", "можно", "так", "поменять", ",", "т.к.", "у", "периодической",
+			"функции интегралы по любым двум периодам совпадают); Тогда считая полусумму, получим",
+			"$a_n(x) = \\frac{1}{2} \\frac{1}{\\pi} \\int_{-\\pi}^{\\pi} \\left( -\\chi\\mathopen{}\\left(x, u + \\frac{\\pi}{n} \\right)\\mathclose{} + \\chi\\mathopen{}\\left(x, u \\right)\\mathclose{} \\right) \\cos(nu) d\\mu(u)$",
+			",", "$\\lvert a_n(x) \\rvert \\leqslant$",
+			"$\\frac{1}{2 \\pi} \\int_{-\\pi}^{\\pi} \\left| -\\chi\\mathopen{}\\left(x, u + \\frac{\\pi}{n} \\right)\\mathclose{} + \\chi\\mathopen{}\\left(x, u \\right)\\mathclose{} \\right| \\lvert \\cos(nu) \\rvert d\\mu(u)$",
+			"$\\leqslant$",
+			"$\\frac{1}{2 \\pi} \\int_{-\\pi}^{\\pi} \\left| \\chi\\mathopen{}\\left(x, u + \\frac{\\pi}{n} \\right)\\mathclose{} - \\chi\\mathopen{}\\left(x, u \\right)\\mathclose{} \\right| d\\mu(u)$",
+			"$\\leqslant$",
+			"$\\frac{1}{2 \\pi} w\\mathopen{}\\left( \\frac{\\pi}{n}, x \\right)\\mathclose{}$",
+			"Аналогично оценим $b_n(x)$, получим $\\lvert b_n(x) \\rvert \\leqslant \\frac{1}{2 \\pi} w\\mathopen{}\\left( \\frac{\\pi}{n}, x \\right)\\mathclose{}$.",
+
+			"Оценим $w\\mathopen{}\\left( \\frac{\\pi}{n}, x \\right)\\mathclose{}$:",
+			"знаем, что $g$ ограничена, тогда $(\\exists M > 0) (\\forall t \\in \\mathbb{R}) \\lvert g(t) \\rvert \\leqslant M$;",
+			"по лемме о замыкании множества непрерывных финитных функций $(\\exists \\tilde{f} \\in C[-\\pi, \\pi]) {\\| f - \\tilde{f} \\|}_{L_1[-\\pi, \\pi]} < \\frac{\\varepsilon}{4M}$, обозначим $f_1 = \\tilde{f}$", "$f_2 = f - \\tilde{f}$", "$f_1$ ограничена на $[-\\pi, \\pi]$, т.к. достигает на нём минимум и максимум по теореме Вейерштрасса, пусть ограничена $B$, ${\\| f_2 \\|}_{L_1[a, b]} < \\frac{\\varepsilon}{4M}$;",
+			"по лемме о непрерывности суммируемой в среднем относительно сдвига и аддитивности интеграла Лебега $(\\exists \\delta_1 > 0) (\\forall h \\in (-\\delta; \\delta) \\setminus \\{ 0 \\}) \\int_{[-\\pi, \\pi]} \\lvert f(t + h) - f(t) \\rvert d\\mu(t) \\leqslant \\int_{\\mathbb{R}} \\lvert f(t + h) - f(t) \\rvert d\\mu(t) < \\frac{\\varepsilon}{4M}$;",
+			"по этой же лемме, т.к. $g$ ограничена, ограничен модуль $g$, потому $g \\in L_1[-\\pi, \\pi]$, $(\\exists \\delta_2 > 0) (\\forall h \\in (-\\delta; \\delta) \\setminus \\{ 0 \\}) \\int_{[-\\pi, \\pi]} \\lvert g(t + h) - g(t) \\rvert d\\mu(t) \\leqslant \\int_{\\mathbb{R}} \\lvert g(t + h) - g(t) \\rvert d\\mu(t) < \\frac{\\varepsilon}{4B}$.",
+			"Возьмём N, чтобы $\\frac{\\pi}{n}$ попадало в $\\delta_1$ и $\\delta_2$ окрестности: $\\frac{\\pi}{n} < m$, если $n > \\frac{\\pi}{m}$. $N = \\left\\lceil \\max \\left\\{ 1, \\frac{\\pi}{\\delta_1}, \\frac{\\pi}{\\delta_2} \\right\\} \\right\\rceil$. Обозначим $\\frac{\\pi}{n}$ как $h$, тогда при $n > N$ для любого $x$ из $[-\\pi, \\pi]$",
+			"$w(h, x) = \\int_{-\\pi}^{\\pi} \\lvert \\chi(x, t + h) - \\chi(x, t) \\rvert d\\mu(t)$",
+			"$= \\int_{-\\pi}^{\\pi} \\lvert f(x + t + h) g(t + h) + g(t + h) f(x + t) - g(t + h) f(x + t) - f(x + t) g(t) \\rvert d\\mu(t)$",
+			"$=$", "$\\underbrace{\\int_{-\\pi}^{\\pi} \\lvert f(x + t + h) - f(x + t) \\rvert \\lvert g(t + h) \\rvert d\\mu(t)}_{(1)}$", "$+$",
+			"$\\underbrace{\\int_{-\\pi}^{\\pi} \\lvert g(x + t) - g(t) \\rvert \\lvert f(x + t) \\rvert d\\mu(t)}_{(2)}$.",
+			"Оценим $(1)$: $(1) \\leqslant M \\int_{-\\pi}^{\\pi} \\underbrace{\\lvert f(x + t + h) - f(x + t) \\rvert}_{u = x + t} d\\mu(t) = M \\int_{-\\pi}^{\\pi} \\lvert f(u + h) - f(u) \\rvert d\\mu(t) \\leqslant M \\frac{\\varepsilon}{4M} = \\frac{\\varepsilon}{4}$,",
+			"пользуемся тем, что интеграл периодической функции по любому периоду один и тот же.",
+			"Оценим $(2)$: $(2) = \\int_{-\\pi}^{\\pi} \\lvert g(x + t) - g(t) \\rvert \\lvert f_1(x + t) + f_2(x + t) \\rvert d\\mu(t) \\leqslant \\int_{-\\pi}^{\\pi} \\lvert g(x + t) - g(t) \\rvert \\lvert f_1(x + t) \\rvert d\\mu(t) + \\int_{-\\pi}^{\\pi} \\lvert g(x + t) - g(t) \\rvert \\lvert f_2(x + t) \\rvert d\\mu(t)$",
+			"$= \\int_{-\\pi}^{\\pi} \\lvert g(x + t) - g(t) \\rvert B d\\mu(t) + \\int_{-\\pi}^{\\pi} (\\lvert g(x + t) \\rvert + \\lvert g(t) \\rvert) \\lvert f_2(x + t) \\rvert d\\mu(t)$",
+			"$< B \\frac{\\varepsilon}{4B} + \\int_{-\\pi}^{\\pi} (\\lvert g(x + t) \\rvert + \\lvert g(t) \\rvert) \\lvert f_2(x + t) \\rvert d\\mu(t)$",
+			"$< \\frac{\\varepsilon}{2} + 2M \\varepsilon{\\varepsilon}{4M} = \\frac{3}{4} \\varepsilon.$",
+			"Значит, $(1) + (2) < \\varepsilon$, требуемое выполнено."
 		]
 	],
 
 	[
-		"Принцип локализации Римана-Лебега"
+		"Принцип локализации Римана-Лебега",
+		[
+			"Если", "$f \\in L_{2 \\pi}$", ",", "$(a, b)$ -- интервал", ", $(a, b) \\subset [-\\pi, \\pi]$, $(\\forall x \\in (a, b)) f(x) = 0$",
+			", $S_f(x)$ -- частичная сумма ряда Фурье функции $f$, тогда для любого $[a', b'] \\subset (a, b)$ $S_f(x)$ сходится",
+			"равномерно к нулю на $[a', b']$"
+		]
 	],
+	/*[
+		"Доказательство",
+		[]
+	],*/
 
     // 3. Достаточные условия сходимости ряда Фурье в точке.
 
@@ -178,7 +237,11 @@ let analysis_4sem = [
     5. Теорема Жордана.
     6. Равномерная сходимость сумм Фейера для непрерывной функции.
     7. Теоремы Вейерштраееа о приближении непрерывных функций тригонометрическими и алгебраическими многочленами.
-    8. Минимальное свойство коэффициентов Фурье по ортогональной системе. Неравенство Бесселя.
+    */
+
+    // 8. Минимальное свойство коэффициентов Фурье по ортогональной системе. Неравенство Бесселя.
+    
+    /*
     9. Полнота ортогональной системы функций. ортонормированный базис и равенство Пар- севаля.
     10. Полнота тригонометрической системы в пространстве функций. суммируемых с квадратом функций. Сходимость ряда Фурье в среднем квадратичном. равенство Парееваля для тригонометрической системы.
     11. Теорема Рисса-Фишера.
