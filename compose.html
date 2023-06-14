@@ -252,6 +252,8 @@
 			return result;
 		}
 		async function rebuild_views() {
+			console.log("rebuild_views, 1.");
+
 			question_name = document.getElementById("question-name-input").value;
 			document.getElementById("question-name").innerHTML = question_name;
 			// Ask for a typeset, if mathjax is loaded.
@@ -259,10 +261,14 @@
 				MathJax.typeset();
 			} catch (e) { }
 
+			console.log("rebuild_views, 2.");
+
 			// console.log(last_used_text);
 			let text = document.getElementById("question-text-input").value;
 			if (text !== last_used_text) {
 				last_used_text = text;
+
+				console.log("rebuild_views, 3.");
 
 				let words = split_text(text);
 				// console.log(words);
@@ -275,11 +281,13 @@
 				if (difference_pos != -1) {
 					// Быстрее, если просто поменяем текст уже существующих элементов:
 					//   не нужно перестраивать DOM.
+				console.log("rebuild_views, 4.");
 					for (var i = difference_pos; i < common_len; ++i) {
 						let word = words[i];
 						if (words[i] == question_words[i]) {
 							continue;
 						}
+				console.log("rebuild_views, 5.");
 						let modification_promise = wait_for_element("#placed-word-" + i.toString() + " .content").then((element) => {
 							element.innerHTML = word;
 							words_placed[i] = word;
@@ -288,18 +296,25 @@
 					}
 				}
 
+				console.log("rebuild_views, 6.");
+
 				// Чтобы смайлик на странице не испортился, надо обновить
 				//   содержимое, прежде чем ставить слова с помощью place_word.
 				await Promise.all(modifications);
 
+				console.log("rebuild_views, 7.");
+
 				if (question_words.length <= words.length) {
 					// Проставили все старые слова от question_words, надо добавить новые.
+					console.log("rebuild_views, 8.");
 					question_words = words;
 					words_available = question_words.slice(common_len);
 					while (words_available.length != 0) {
 						place_word(0);
 					}
 				} else {
+					console.log("rebuild_views, 8.");
+
 					// Новых слов стало меньше, надо удалить.
 					// Они вернутся в words_available, но ничего страшного, мы никогда оттуда слова не добавляем без модификации под новый набор слов.
 					await unplace_words_starting_from(common_len);
@@ -307,6 +322,8 @@
 					words_available = [];
 					update_status_emoji(true);
 				}
+
+					console.log("rebuild_views, 9.");
 
 				document.getElementById("question-content").value = JSON.stringify([question_name, question_words]);
 
