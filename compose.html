@@ -42,10 +42,29 @@
 		.underlined-word .content {
 			border-bottom: 2px solid black;
 		}
+
+		html, body {
+			max-width: 100%;
+			overflow-x: hidden;
+		}
+
+		#placed_words {
+			line-height: 180%;
+		}
 	</style>
 </head>
 <body>
-	<h4 id="question-name"></h4>
+	<div style="display: grid; grid-template-columns: auto 1fr; overflow-y: hidden;">
+		<div style="display: grid; margin-right: 2ch; grid-template-rows: auto 1fr auto auto auto;">
+				<input id="question-name-input" style="display: block; width: 40ch; margin: 1ch auto; font-family: monospace; font-size: 1.1em;" spellcheck="false"/>
+	<textarea id="question-text-input" style="display: block; width: 40ch; height: 100%; margin: 0 auto; font-family: monospace; font-size: 1.1em; line-height: 1.57em;" spellcheck="false"></textarea>
+	<textarea id="question-content" style="display: block; width: 40ch; font-family: monospace; font-size: 1.1em; margin: 1ch auto;" readonly spellcheck="false"></textarea>
+	<textarea id="question-js" style="display: block; width: 40ch; font-family: monospace; font-size: 1.1em; margin: 1ch auto;" spellcheck="false"></textarea>
+	<div style="display: grid; width: 40ch; margin: 0 auto; grid-template-columns: 1fr 1fr;"><button onclick="from_js();" style="margin-right: 1ch; margin-left: 1ch;">Расджаваскриптить</button><button onclick="document.getElementById('question-text-input').value = "";" style="margin-right: 1ch; margin-left: 1ch;">Очистить текст</button></div>
+
+		</div>
+	<div style="max-height: calc(100vh - max(10px, 2em)); overflow-y: auto; overflow-x: hidden;">
+		<h4 id="question-name"></h4>
 	<div><img id="feedback-emoji" src="sand-clocks.png" style="height: 20px;" /></div>
 	<br/>
 	<div id="placed_words" style="margin-bottom: 20px;"></div>
@@ -53,12 +72,9 @@
 	<!--<button id="show-proof">Посмотреть доказательство</button>-->
 	<!--<button id="try-to-proof-in-lean-btn">Попробовать доказать в lean</button>-->
 	<button id="next-question-btn" style="display: none; margin: 0 auto;" onclick="next_question();">Дальше</button>
-	<input id="question-name-input" style="display: block; width: min(80ch, 100% - 5em); margin: 1ch auto; font-family: monospace; font-size: 1.1em;" spellcheck="false"/>
-	<textarea id="question-text-input" style="display: block; width: min(80ch, 100% - 5em); height: 18em; margin: 0 auto; font-family: monospace; font-size: 1.1em; line-height: 1.57em;" spellcheck="false"></textarea>
-	<textarea id="question-content" style="display: block; width: min(80ch, 100% - 5em); margin: 1ch auto; font: icon;" readonly spellcheck="false"></textarea>
-	<br/>
-	<textarea id="question-js" style="display: block; width: min(80ch, 100% - 5em); margin: 1ch auto; font: icon;" spellcheck="false"></textarea>
-	<div style="display: grid; width: 40ch; margin: 0 auto; grid-template-columns: 1fr 1fr;"><button onclick="from_js();" style="margin-right: 1ch; margin-left: 1ch;">Расджаваскриптить</button><button onclick="document.getElementById('question-text-input').value = "";" style="margin-right: 1ch; margin-left: 1ch;">Очистить текст</button></div>
+			
+		</div>
+	</div>
 	<script>
 		var question_name = "";
 		var question_words = [];
@@ -174,7 +190,12 @@
 			console.log("unplace_words_starting_from: 1.");
 			let num_placed_words = words_placed.length;
 			for (i = index; i < num_placed_words; ++i) {
-				await wait_for_element("#placed-word-"+i.toString()).then((element) => element.remove());
+				await wait_for_element("#placed-word-"+i.toString()).then((element) => {
+					// Mathjax медленно начинает рендерить.
+					// Говорим, что делаем, чтобы он работал побыстрее.
+					try { MathJax.typesetClear([element]) } catch (e) {};
+					element.remove()
+				});
 				words_available.push(words_placed[i]);
 			}
 			console.log("unplace_words_starting_from: 2.");
@@ -191,6 +212,8 @@
 
 		let available_words_area = document.getElementById("choices");
 		function rebuild_available_words_area() {
+			try { MathJax.typesetClear([available_words_area]); } catch (e) {};
+
 			var html = "";
 			for (i = 0; i < words_available.length; ++i) {
 				html += generate_available_word_btn_html(i);
@@ -235,10 +258,13 @@
 			console.log("rebuild_views, 1.");
 
 			question_name = document.getElementById("question-name-input").value;
-			document.getElementById("question-name").innerHTML = question_name;
+			let question_name_element = document.getElementById("question-name");
+			try { MathJax.typesetClear([question_name_element]); } catch (e) {};
+			question_name_element.innerHTML = question_name;
+
 			// Ask for a typeset, if mathjax is loaded.
 			try {
-				MathJax.typeset();
+				MathJax.typeset([question_name_element]);
 			} catch (e) { }
 
 			console.log("rebuild_views, 2.");
@@ -273,6 +299,7 @@
 						let position = i;
 						console.log("rebuild_views, 5.");
 						let modification_promise = wait_for_element("#placed-word-" + i.toString() + " .content").then((element) => {
+							try { MathJax.typesetClear([element]); } catch (e) {};
 							element.innerHTML = word;
 							words_placed[position] = word;
 						});
@@ -356,16 +383,9 @@
 
 			// Ask for a typeset, if mathjax is loaded.
 			try {
-				MathJax.typeset();
+				MathJax.typeset([document.getElementById("placed_words")]);
 			} catch (e) { }
 		}
 	</script>
-
-	<br/>
-	<br/>
-	<br/>
-	<br/>	
-	<a href="https://www.flaticon.com/ru/free-icons/" title="печальный иконки">Печальный иконки от Vectors Market - Flaticon</a>
-	<a target="_blank" href="https://icons8.com/icon/T9nkeADgD3z6/крестик">Крестик</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 </body>
 </html>
