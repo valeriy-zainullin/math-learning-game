@@ -308,7 +308,15 @@
 						console.log("rebuild_views, 5.");
 						let modification_promise = wait_for_element("#placed-word-" + i.toString() + " .content").then((element) => {
 							try { MathJax.typesetClear([element]); } catch (e) {};
-							element.innerHTML = word;
+							
+							var printed_word = "";
+							if (word === "&br&") {
+								printed_word = "<br/>";
+							} else {
+								printed_word = word;
+							}
+
+							element.innerHTML = printed_word;
 							words_placed[position] = word;
 						});
 						modifications.push(modification_promise);
