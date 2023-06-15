@@ -55,15 +55,15 @@
 </head>
 <body>
 	<div style="display: grid; grid-template-columns: auto 1fr; overflow-y: hidden;">
-		<div style="display: grid; margin-right: 2ch; grid-template-rows: auto 1fr auto auto auto;">
+		<div style="display: grid; grid-template-rows: auto 1fr auto auto auto;">
 				<input id="question-name-input" style="display: block; width: 40ch; margin: 1ch auto; font-family: monospace; font-size: 1.1em;" spellcheck="false"/>
-	<textarea id="question-text-input" style="display: block; width: 40ch; height: 100%; margin: 0 auto; font-family: monospace; font-size: 1.1em; line-height: 1.57em;" spellcheck="false"></textarea>
+	<textarea id="question-text-input" style="display: block; width: 40ch; height: auto; margin: 1ch auto; font-family: monospace; font-size: 1.1em; line-height: 1.57em;" spellcheck="false"></textarea>
 	<textarea id="question-content" style="display: block; width: 40ch; font-family: monospace; font-size: 1.1em; margin: 1ch auto;" readonly spellcheck="false"></textarea>
 	<textarea id="question-js" style="display: block; width: 40ch; font-family: monospace; font-size: 1.1em; margin: 1ch auto;" spellcheck="false"></textarea>
 	<div style="display: grid; width: 40ch; margin: 0 auto; grid-template-columns: 1fr 1fr;"><button onclick="from_js();" style="margin-right: 1ch; margin-left: 1ch;">Расджаваскриптить</button><button onclick="document.getElementById('question-text-input').value = "";" style="margin-right: 1ch; margin-left: 1ch;">Очистить текст</button></div>
 
 		</div>
-	<div style="max-height: calc(100vh - max(10px, 2em)); overflow-y: auto; overflow-x: hidden;">
+	<div style="max-height: calc(100vh - max(10px, 2em)); overflow-y: auto; overflow-x: hidden; padding: 0 2ch;">
 		<h4 id="question-name"></h4>
 	<div><img id="feedback-emoji" src="sand-clocks.png" style="height: 20px;" /></div>
 	<br/>
@@ -87,9 +87,17 @@
 
 		function generate_placed_word_element(word) {
 			let placed_word_index = words_placed.length - 1;
+
+			var printed_word = "";
+			if (word === "&br&") {
+				printed_word = "<br/>";
+			} else {
+				printed_word = word;
+			}
+
 			var element = document.createElement("span");
 			element.setAttribute("id", "placed-word-"+placed_word_index.toString());
-			element.innerHTML = "<span class=\"content\">"+word+"</span> ";
+			element.innerHTML = "<span class=\"content\">"+printed_word+"</span> ";
 			return element;
 		}
 
@@ -242,7 +250,7 @@
 						result.push(text.slice(last_unsliced, i));
 						last_unsliced = i + 1;
 					}
-					let new_word_delimiters = [',', ';', ':', '.', '(', ')'];
+					let new_word_delimiters = [',', ';', ':', '(', ')'];
 					if (new_word_delimiters.indexOf(text[i]) != -1) {
 						result.push(text.slice(last_unsliced, i));
 						result.push(text[i]);

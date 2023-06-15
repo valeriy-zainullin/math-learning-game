@@ -102,9 +102,17 @@
 
 		function generate_placed_word_element(word) {
 			let placed_word_index = words_placed.length - 1;
+
+			var printed_word = "";
+			if (word === "&br&") {
+				printed_word = "<br/>";
+			} else {
+				printed_word = word;
+			}
+
 			var element = document.createElement("span");
 			element.setAttribute("id", "placed-word-"+placed_word_index.toString());
-			element.innerHTML = "<span class=\"content\">"+word+"</span> <a href=\"\" style=\"text-decoration: none;\" onclick=\"try { unplace_words_starting_from("+placed_word_index.toString()+"); } catch (e) {console.log(e);}; return false;\"><img src=\"cross.png\" class=\"placed-word-delete\" style=\"vertical-align: middle; height: 14px;\"> </a>";
+			element.innerHTML = "<span class=\"content\">"+printed_word+"</span> <a href=\"\" style=\"text-decoration: none;\" onclick=\"try { unplace_words_starting_from("+placed_word_index.toString()+"); } catch (e) {console.log(e);}; return false;\"><img src=\"cross.png\" class=\"placed-word-delete\" style=\"vertical-align: middle; height: 14px;\"> </a>";
 			return element;
 		}
 
@@ -187,6 +195,14 @@
 			} else {
 				update_status_emoji(false);
 			}
+
+			if (words_available.length != 0 && words_placed.length % 10 == 0) {
+				let difference_pos = check_arrays_equal(words_placed, question_words.slice(0, words_placed.length));
+				let is_correct = difference_pos === -1;
+				if (!is_correct) {
+					underline_word(difference_pos);
+				}
+			}
 		}
 
 		function unplace_words_starting_from(index) {
@@ -203,8 +219,16 @@
 		}
 
 		function generate_available_word_btn_html(index) {
+			var word = words_available[index];
+			var printed_word = "";
+			if (word === "&br&") {
+				printed_word = "<параграф>";
+			} else {
+				printed_word = word;
+			}
+
 			// Difficult to tap with a finger on my phone otherwise.
-			return "<button style=\"vertical-align: top; min-height: 40px; min-width: 40px; margin-bottom: 20px;\" onclick=\"place_word("+index.toString()+");\">"+words_available[index]+"</button>&nbsp;&nbsp;";
+			return "<button style=\"vertical-align: top; min-height: 40px; min-width: 40px; margin-bottom: 20px;\" onclick=\"place_word("+index.toString()+");\">"+printed_word+"</button>&nbsp;&nbsp;";
 		}
 
 		let available_words_area = document.getElementById("choices");
