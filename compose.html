@@ -69,9 +69,12 @@
 		var words_placed = [];
 		var words_available = question_words.slice().sort();
 
-		function generate_placed_word_html(word) {
+		function generate_placed_word_element(word) {
 			let placed_word_index = words_placed.length - 1;
-			return "<span id=\"placed-word-"+placed_word_index.toString()+"\"><span class=\"content\">"+word+"</span> <a href=\"\" style=\"text-decoration: none;\" onclick=\"try { unplace_words_starting_from("+placed_word_index.toString()+"); } catch (e) {console.log(e);}; return false;\"><img src=\"cross.png\" class=\"placed-word-delete\" style=\"vertical-align: middle; height: 14px;\"> </a></span>";
+			var element = document.createElement("span");
+			element.setAttribute("id", "placed-word-"+placed_word_index.toString());
+			element.innerHTML = "<span class=\"content\">"+word+"</span> ";
+			return element;
 		}
 
 		function underline_word(placed_word_index) {
@@ -79,7 +82,10 @@
 		}
 
 		function check_arrays_equal(lhs, rhs) {
+			console.time("check_arrays_equal");
+
 			if (lhs.length != rhs.length) {
+				console.time("check_arrays_equal");
 				return -2;
 			}
 
@@ -90,10 +96,12 @@
 			
 			for (i = 0; i < lhs.length; ++i) {
 				if (lhs[i] != rhs[i]) {
+					console.timeEnd("check_arrays_equal");
 					return i;
 				}
 			}
 
+			console.timeEnd("check_arrays_equal");
 			return -1;
 		}
 
@@ -150,34 +158,13 @@
 			words_available.splice(index, 1);
 			words_placed.push(word);
 
-			placed_words_area.innerHTML += generate_placed_word_html(word);
-
-			// May not be available, will load at some point.
-			//   It'll typeset once it's loaded. Otherwise
-			//   ask to retypeset. Maybe it's done automatically
-			//   and this code is not needed.
-			try {
-				MathJax.typeset();
-			} catch (e) {}
-			
-			// console.log(words_available.length);
+			placed_words_area.appendChild(generate_placed_word_element(word));
 
 			if (words_available.length == 0) {
 				let difference_pos = -1; // check_arrays_equal(words_placed, question_words);
 				let is_correct = difference_pos === -1;
 
 				update_status_emoji(is_correct);
-
-				if (is_correct) {
-					hide_crosses();
-					// show_next_question_btn();
-				} else {
-					// Возможно, ошиблись в последнем слове. Тогда оно могло ещё не появиться в
-					//   DOM. Подождём выполнения Promise. Когда выполнится, установим.
-					wait_for_element("#placed-word-"+difference_pos.toString()).then((element) => {
-						underline_word(difference_pos);
-					});
-				}
 			} else {
 				update_status_emoji(false);
 			}
@@ -195,14 +182,6 @@
 			update_status_emoji(false);
 
 			console.log("unplace_words_starting_from: 3.");
-
-			// May not be available, will load at some point.
-			//   It'll typeset once it's loaded. Otherwise
-			//   ask to retypeset. Maybe it's done automatically
-			//   and this code is not needed.
-			try {
-				MathJax.typeset();
-			} catch (e) {}
 		}
 
 		function generate_available_word_btn_html(index) {
@@ -240,7 +219,8 @@
 						result.push(text.slice(last_unsliced, i));
 						last_unsliced = i + 1;
 					}
-					if (text[i] == ',' || text[i] == ';' || text[i] == '.') {
+					let new_word_delimiters = [',', ';', ':', '.', '(', ')'];
+					if (new_word_delimiters.indexOf(text[i]) != -1) {
 						result.push(text.slice(last_unsliced, i));
 						result.push(text[i]);
 						last_unsliced = i + 1;
@@ -266,6 +246,7 @@
 			// console.log(last_used_text);
 			let text = document.getElementById("question-text-input").value;
 			if (text !== last_used_text) {
+				console.time("rebuild_views");
 				last_used_text = text;
 
 				console.log("rebuild_views, 3.");
@@ -279,9 +260,10 @@
 
 				var modifications = [];
 				if (difference_pos != -1) {
+			console.time("rebuild_views, update_existing");
 					// Быстрее, если просто поменяем текст уже существующих элементов:
 					//   не нужно перестраивать DOM.
-				console.log("rebuild_views, 4.");
+					console.log("rebuild_views, 4.");
 					for (var i = difference_pos; i < common_len; ++i) {
 						let word = words[i];
 						if (words[i] == question_words[i]) {
@@ -296,6 +278,7 @@
 						});
 						modifications.push(modification_promise);
 					}
+				console.timeEnd("rebuild_views, update_existing");
 				}
 
 				console.log("rebuild_views, 6.");
@@ -307,6 +290,8 @@
 				console.log("rebuild_views, 7.");
 
 				if (question_words.length <= words.length) {
+					console.time("rebuild_views, got new words");
+					
 					// Проставили все старые слова от question_words, надо добавить новые.
 					console.log("rebuild_views, 8.");
 					question_words = words;
@@ -314,7 +299,11 @@
 					while (words_available.length != 0) {
 						place_word(0);
 					}
+
+					console.timeEnd("rebuild_views, got new words");
 				} else {
+					console.time("rebuild_views, got less words");
+
 					console.log("rebuild_views, 8.");
 
 					// Новых слов стало меньше, надо удалить.
@@ -323,19 +312,24 @@
 					question_words = words;
 					words_available = [];
 					update_status_emoji(true);
+
+					console.timeEnd("rebuild_views, got less words");
 				}
 
-					console.log("rebuild_views, 9.");
+				console.log("rebuild_views, 9.");
 
 				document.getElementById("question-content").value = JSON.stringify([question_name, question_words]);
 
 				console.log("rebuild_views, before mathjax.")
 
 				// Ask for a typeset, if mathjax is loaded.
+				console.time("rebuild_views, mathjax typeset.")
 				try {
 					MathJax.typeset();
 				} catch (e) { }
+				console.timeEnd("rebuild_views, mathjax typeset.")
 
+				console.timeEnd("rebuild_views");
 				console.log("rebuild_views, after mathjax.")
 			}
 		}
@@ -345,7 +339,7 @@
 			console.log("run_timer start.");
 			await rebuild_views();
 			console.log("run_timer end.");
-			rebuilding_timer = setTimeout(run_timer, 2000);
+			rebuilding_timer = setTimeout(run_timer, 2500);
 		};
 		run_timer();
 

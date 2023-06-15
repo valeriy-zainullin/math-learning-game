@@ -100,9 +100,12 @@
 		var words_placed = [];
 		var words_available = question_words.slice().sort();
 
-		function generate_placed_word_html(word) {
+		function generate_placed_word_element(word) {
 			let placed_word_index = words_placed.length - 1;
-			return "<span id=\"placed-word-"+placed_word_index.toString()+"\"><span class=\"content\">"+word+"</span> <a href=\"\" style=\"text-decoration: none;\" onclick=\"try { unplace_words_starting_from("+placed_word_index.toString()+"); } catch (e) {console.log(e);}; return false;\"><img src=\"cross.png\" class=\"placed-word-delete\" style=\"vertical-align: middle; height: 14px;\"> </a></span>";
+			var element = document.createElement("span");
+			element.setAttribute("id", "placed-word-"+placed_word_index.toString());
+			element.innerHTML = "<span class=\"content\">"+word+"</span> <a href=\"\" style=\"text-decoration: none;\" onclick=\"try { unplace_words_starting_from("+placed_word_index.toString()+"); } catch (e) {console.log(e);}; return false;\"><img src=\"cross.png\" class=\"placed-word-delete\" style=\"vertical-align: middle; height: 14px;\"> </a>";
+			return element;
 		}
 
 		function underline_word(placed_word_index) {
@@ -163,7 +166,7 @@
 
 			rebuild_available_words_area();
 
-			placed_words_area.innerHTML += generate_placed_word_html(word);
+			placed_words_area.appendChild(generate_placed_word_element(word));
 
 			MathJax.typeset();
 
