@@ -235,7 +235,6 @@
 			} catch (e) {}
 		}
 
-		var last_used_text = "";
 		function split_text(text) {
 			text = text.replace(/[\t\r\n]/g, ' ');
 			var result = [];
@@ -262,6 +261,9 @@
 			result = result.filter(item => item !== "");
 			return result;
 		}
+		var last_time_changed = null;
+		var last_used_text = "";
+		var last_typesetted_text = "";
 		async function rebuild_views() {
 			console.log("rebuild_views, 1.");
 
@@ -279,9 +281,27 @@
 
 			// console.log(last_used_text);
 			let text = document.getElementById("question-text-input").value;
-			if (text !== last_used_text) {
-				console.time("rebuild_views");
+
+			let now = window.performance.now();
+			// Если редактировалось недавно (в течение 10 секунд), ничего не делаем, чтобы не замедлять.
+			// Т.е. отображаем, если увидели два раза с разницей в 10 секунд, если текст уже 8+2.5 секунд
+			//   на экране.
+			if (last_time_changed === null) {
+				// В самый первый раз нормально рисуем.
+				last_time_changed = now;
+			} else if (last_used_text !== text) {
+				console.log("deferring redraw, editing present.");
+				last_time_changed = now;
 				last_used_text = text;
+				return;
+			} else if (now - last_time_changed < 8000) {
+				// Текст не поменялся, но времени прошло мало.
+				return;
+			}
+
+			if (text !== last_typesetted_text) {
+				console.time("rebuild_views");
+				last_typesetted_text = text;
 
 				console.log("rebuild_views, 3.");
 
@@ -382,7 +402,7 @@
 			console.log("run_timer start.");
 			await rebuild_views();
 			console.log("run_timer end.");
-			rebuilding_timer = setTimeout(run_timer, 6000);
+			rebuilding_timer = setTimeout(run_timer, 2500);
 		};
 		run_timer();
 
