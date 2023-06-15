@@ -127,10 +127,10 @@
 
 			// Will only log for cases when all words were already placed. Because the rhs is always question_words.
 			//   I keep it, because I encounted small bugs, when I add new questions. Like forgetting dollars around a single-character tex math.
-			console.log(lhs);
-			console.log(rhs);
+			// console.log(lhs);
+			// console.log(rhs);
 			
-			for (i = 0; i < lhs.length; ++i) {
+			for (i = start_pos; i < lhs.length; ++i) {
 				if (lhs[i] != rhs[i]) {
 					return i;
 				}
