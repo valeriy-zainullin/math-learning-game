@@ -269,6 +269,11 @@
 
 			question_name = document.getElementById("question-name-input").value;
 			let question_name_element = document.getElementById("question-name");
+			let old_question_name = question_name_element.innerHTML;
+			if (old_question_name != question_name) {
+				document.getElementById("question-content").value = JSON.stringify([question_name, question_words]);
+			}
+
 			try { MathJax.typesetClear([question_name_element]); } catch (e) {};
 			question_name_element.innerHTML = question_name;
 
