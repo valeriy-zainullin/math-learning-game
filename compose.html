@@ -420,7 +420,7 @@
 			}
 			let data = JSON.parse(text);
 			document.getElementById("question-name-input").value = data[0];
-			document.getElementById("question-text-input").value += '\n' + data[1].replace("&br&", "&br\n");
+			document.getElementById("question-text-input").value += '\n' + data[1].join(' ').replace("&br&", "&br\n");
 
 			// Ask for a typeset, if mathjax is loaded.
 			try {
