@@ -250,7 +250,15 @@
 						last_unsliced = i + 1;
 					}
 					let new_word_delimiters = [',', ';', ':', '(', ')'];
-					if (new_word_delimiters.indexOf(text[i]) != -1) {
+					// Предыдущие символы, не делающие следующий разделитель началом слова.
+					let allowed_prev_chars  = ['.'];
+
+					// "Хак" для нумарации типо 1.1.). Можно как-то сделать это единообразно,
+					//   когда появятся ещё такие правила.
+					// Скобочка в 1.1.) не даст новое слово.
+					// После точки всегда должен идти пробел, чтобы начиналось новое слово.
+
+					if (new_word_delimiters.indexOf(text[i]) != -1 && (i == 0 || allowed_prev_chars.indexOf(text[i - 1]) == -1)) {
 						result.push(text.slice(last_unsliced, i));
 						result.push(text[i]);
 						last_unsliced = i + 1;
