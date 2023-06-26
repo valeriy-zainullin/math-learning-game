@@ -420,15 +420,28 @@
 		run_timer();
 
 		function from_js() {
-			var text = document.getElementById("question-js").value;
-			text = text.replace(/\t/g, ' ');
-			console.log(text);
-			while (text.length != 0 && text[text.length - 1] == ' ' || text[text.length - 1] == ',' || text[text.length - 1] == '\n') {
-				text = text.slice(0, text.length - 1);
+			var json_string = document.getElementById("question-js").value;
+			json_string = json_string.replace(/\t/g, ' ');
+
+			while (json_string.length != 0 && json_string[json_string.length - 1] == ',') {
+				json_string = json_string.slice(0, json_string.length - 1);
 			}
-			let data = JSON.parse(text);
-			document.getElementById("question-name-input").value = data[0];
-			document.getElementById("question-text-input").value += '\n' + data[1].join(' ').replace("&br&", "&br\n");
+
+			let data = JSON.parse(json_string);
+
+			let title = data[0];
+			let items = data[1];
+
+			for (var i = 0; i < items.length; ++i) {
+				if (items[i] === "&br&") {
+					items[i] = "&br&\n";
+				} else {
+					items[i] = items[i] + ' ';
+				}
+			}
+
+			document.getElementById("question-name-input").value = title;
+			document.getElementById("question-text-input").value += items.join('');
 
 			// Ask for a typeset, if mathjax is loaded.
 			try {
