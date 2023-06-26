@@ -423,7 +423,8 @@
 			var json_string = document.getElementById("question-js").value;
 			json_string = json_string.replace(/\t/g, ' ');
 
-			while (json_string.length != 0 && json_string[json_string.length - 1] == ',') {
+			let deleted_endings = [' ', ',', '\t', '\n'];
+			while (json_string.length != 0 && deleted_endings.indexOf(json_string[json_string.length - 1]) != -1) {
 				json_string = json_string.slice(0, json_string.length - 1);
 			}
 
@@ -441,7 +442,7 @@
 			}
 
 			document.getElementById("question-name-input").value = title;
-			document.getElementById("question-text-input").value += items.join('');
+			document.getElementById("question-text-input").value += '\n' + items.join('');
 
 			// Ask for a typeset, if mathjax is loaded.
 			try {
