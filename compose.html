@@ -449,6 +449,15 @@
 				MathJax.typeset([document.getElementById("placed_words")]);
 			} catch (e) { };
 		}
+
+		// Очищать копирование из поля для вставки json,
+		//   чтобы не скопировать случайно старое
+		//   значение, если ошиблись полями.
+		document.getElementById("question-js").addEventListener("copy", (event) => {
+			const selection = document.getSelection();
+			event.clipboardData.setData("text/plain", '');
+			event.preventDefault();
+		});
 	</script>
 </body>
 </html>
