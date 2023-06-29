@@ -196,7 +196,7 @@
 				update_status_emoji(false);
 			}
 
-			if (words_available.length != 0 && words_placed.length % 10 == 0) {
+			if (words_available.length != 0 && words_placed.length % 5 == 0) {
 				let difference_pos = check_arrays_equal(words_placed, question_words.slice(0, words_placed.length));
 				let is_correct = difference_pos === -1;
 				if (!is_correct) {
