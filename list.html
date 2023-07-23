@@ -102,6 +102,7 @@
 			heading_element.innerHTML = question[0];
 
 			var words_element = document.createElement("div");
+			words_element.setAttribute("style", "line-height: 150%;");
 
 			for (var word_index = 0; word_index < question[1].length; ++word_index) {
 				words_element.appendChild(generate_placed_word_element(question[1][word_index]));
