@@ -51,6 +51,11 @@
 		#placed_words {
 			line-height: 180%;
 		}
+
+		.optional_word {
+			font-style: italic;
+			color: gray;
+		}
 	</style>
 </head>
 <body>
@@ -85,19 +90,37 @@
 		var words_placed = [];
 		var words_available = question_words.slice().sort();
 
+		var is_optional = false;
 		function generate_placed_word_element(word) {
 			let placed_word_index = words_placed.length - 1;
 
 			var printed_word = "";
 			if (word === "&br&") {
 				printed_word = "<br/>";
+			} else if (word === "&opt>") {
+				printed_word = "&amp;opt&gt;"
+				// Bad design already :)
+				// But it will be enough for the
+				//   project.
+				is_optional = true;
+			} else if (word == "<opt&") {
+				printed_word = "&lt;opt&amp;"
 			} else {
 				printed_word = word;
 			}
-
+			
 			var element = document.createElement("span");
+			if (is_optional) {
+				element.classList.add("optional_word");
+			}
+
 			element.setAttribute("id", "placed-word-"+placed_word_index.toString());
 			element.innerHTML = "<span class=\"content\">"+printed_word+"</span> ";
+
+			if (word == "<opt&") {
+				is_optional = false;
+			}
+
 			return element;
 		}
 
