@@ -61,6 +61,11 @@
 		.question h4 {
 			margin-bottom: 0.3em;
 		}
+
+		.optional_word {
+			font-style: italic;
+			color: gray;
+		}
 	</style>
 </head>
 <body>
@@ -81,17 +86,25 @@
 
 		let questions_element = document.getElementById("active_subject");
 
-		function generate_placed_word_element(word) {
+		function generate_placed_word_element(word, is_optional) {
 			// let placed_word_index = words_placed.length - 1;
 
 			var printed_word = "";
 			if (word === "&br&") {
 				printed_word = "<br/>";
+			} else if (word === "&opt>") {
+				printed_word = "&amp;opt&gt;"
+			} else if (word == "<opt&") {
+				printed_word = "&lt;opt&amp;"
 			} else {
 				printed_word = word;
 			}
 
 			var element = document.createElement("span");
+			if (is_optional) {
+				element.classList.add("optional_word");
+			}
+
 			// element.setAttribute("id", "placed-word-"+placed_word_index.toString());
 			element.innerHTML = "<span class=\"content\">"+printed_word+"</span> ";
 			return element;
@@ -104,8 +117,19 @@
 			var words_element = document.createElement("div");
 			words_element.setAttribute("style", "line-height: 150%;");
 
+			var is_optional = false;
 			for (var word_index = 0; word_index < question[1].length; ++word_index) {
-				words_element.appendChild(generate_placed_word_element(question[1][word_index]));
+				let word = question[1][word_index];
+				if (word == "&opt>") {
+					// notify if is_optional is already true.
+					is_optional = true;
+					continue;
+				} else if (word == "<opt&") {
+					// notify if is_optional already false.
+					is_optional = false;
+					continue;
+				}
+				words_element.appendChild(generate_placed_word_element(word, is_optional));
 			}
 
 			var question_element = document.createElement("div");
