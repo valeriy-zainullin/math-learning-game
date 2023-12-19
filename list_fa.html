@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Список вопросов</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+	<meta charset="UTF-8">
+	<script type="text/javascript" src="analysis-3sem.js"></script>
+	<script type="text/javascript" src="prob_and_meas_theory_3sem.js"></script>
+	<script type="text/javascript" src="analysis-4sem.js"></script>
+	<script type="text/javascript" src="diff-equations-4sem.js"></script>
+	<script type="text/javascript" src="analysis-4sem-ext.js"></script>
+	<script type="text/javascript" src="prob_theory.js"></script>
+	<script type="text/javascript" src="functional_analysis.js"></script>
+	<script>
+		window.MathJax = {
+		  tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        macros: {
+          eps: "\\varepsilon",
+          jleft:  ["\\mathopen{}\\left#1", 1],
+          jright: ["\\right#1\\mathclose{}", 1],
+          C: "\\mathbb{C}",
+          R: "\\mathbb{R}",
+          Q: "\\mathbb{Q}",
+          N: "\\mathbb{N}",
+          ol: ["\\overline{#1}", 1],
+          ul: ["\\underline{#1}", 1],
+          mds: ["\\jleft\\lvert #1 \\jright\\rvert", 1],
+          mmds: ["\\jleft\| #1 \\jright\|", 1],
+        }
+		  },
+		  svg: {
+		    fontCache: 'global'
+		  }
+		};
+	</script>
+	<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+	<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+	<style>
+		@-webkit-keyframes fadeIn { 
+		  0% { opacity: 0.25; }
+		  100% { opacity: 1; }
+		}
+
+		@keyframes fadeIn {
+		  0% { opacity: 0.25; }
+		  100% { opacity: 1; }
+		}
+
+		.placed-word-delete {
+			opacity: 25%;
+		}
+
+		.placed-word-delete:hover {
+			-webkit-animation-name: fadeIn;
+		  	-webkit-animation-duration: 0.6s;
+		 	 animation-name: fadeIn;
+		 	 animation-duration: 0.6s;
+		 	 animation-fill-mode: forwards;
+		}
+
+		.underlined-word .content {
+			border-bottom: 2px solid black;
+		}
+
+		html, body {
+			max-width: 100%;
+			overflow-x: hidden;
+		}
+
+		#placed_words {
+			line-height: 180%;
+		}
+
+		.question h4 {
+			margin-bottom: 0.3em;
+		}
+
+		.optional_word {
+			font-style: italic;
+			color: gray;
+		}
+	</style>
+</head>
+<body>
+	<div style="display: grid; grid-template-columns: auto 1fr; overflow-y: hidden;">
+		<div style="display: grid; grid-template-rows: auto;" id="subjects"></div>
+		<div style="height: calc(100vh - max(10px, 2em)); overflow-y: auto; overflow-x: hidden; padding: 0 2ch;" id="active_subject">
+			<!-- Subject name -->
+			<!-- Questions div -->
+			<br/>
+			<br/>
+			<!-- Some padding at the top feels good, imho. What do you think? -->
+		</div>
+	</div>
+	<script>
+		let subjects = [functional_analysis];
+
+		var active_subject_index = 0;
+
+		let questions_element = document.getElementById("active_subject");
+
+		function generate_placed_word_element(word, is_optional) {
+			// let placed_word_index = words_placed.length - 1;
+
+			var printed_word = "";
+			if (word === "&br&") {
+				printed_word = "<br/>";
+			} else if (word === "&opt>") {
+				printed_word = "&amp;opt&gt;"
+			} else if (word == "<opt&") {
+				printed_word = "&lt;opt&amp;"
+			} else {
+				printed_word = word;
+			}
+
+			var element = document.createElement("span");
+			if (is_optional) {
+				element.classList.add("optional_word");
+			}
+
+			// element.setAttribute("id", "placed-word-"+placed_word_index.toString());
+			element.innerHTML = "<span class=\"content\">"+printed_word+"</span> ";
+			return element;
+		}
+
+		function generate_question_element(question_index, question) {
+			var heading_element = document.createElement("h4");
+			heading_element.innerHTML = question[0];
+
+			var words_element = document.createElement("div");
+			words_element.setAttribute("style", "line-height: 150%;");
+
+			var is_optional = false;
+			for (var word_index = 0; word_index < question[1].length; ++word_index) {
+				let word = question[1][word_index];
+				if (word == "&opt>") {
+					// notify if is_optional is already true.
+					is_optional = true;
+					continue;
+				} else if (word == "<opt&") {
+					// notify if is_optional already false.
+					is_optional = false;
+					continue;
+				}
+				words_element.appendChild(generate_placed_word_element(word, is_optional));
+			}
+
+			var question_element = document.createElement("div");
+			question_element.classList.add("question");
+			question_element.appendChild(heading_element);
+			question_element.appendChild(words_element);
+
+			return question_element;
+		}
+
+		function update_questions() {
+			// TODO: support subjects.
+			let active_subject = subjects[active_subject_index];
+
+			var last_defined = -1; // Когда ошибаемся с запятыми, элемент не добавляется, парсер просто восстанавливается. Логгируем такие ошибки.
+			var got_undefined = false;
+			for (var i = 0; i < active_subject.length; ++i) {
+				if (active_subject[i] === undefined) {
+					got_undefined = true;
+					console.log("Undefined question after " + last_defined.toString());
+					console.log(active_subject[last_defined]);
+					continue;
+				} else {
+					last_defined = i;
+				}
+				questions_element.appendChild(generate_question_element(i, active_subject[i]));
+			}
+
+			if (got_undefined) {
+				alert("Got undefined elements.");
+			}
+		}
+
+		update_questions();
+	</script>
+</body>
+</html>
