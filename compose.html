@@ -7,7 +7,20 @@
 	<script>
 		window.MathJax = {
 		  tex: {
-		    inlineMath: [['$', '$'], ['\\(', '\\)']]
+		    inlineMath: [['$', '$'], ['\\(', '\\)']],
+		    macros: {
+		    	eps: "\\varepsilon",
+		    	jleft:  ["\\mathopen{}\\left#1", 1],
+		    	jright: ["\\right#1\\mathclose{}", 1],
+		    	C: "\\mathbb{C}",
+		    	R: "\\mathbb{R}",
+		    	Q: "\\mathbb{Q}",
+		    	N: "\\mathbb{N}",
+		    	ol: ["\\overline{#1}", 1],
+		    	ul: ["\\underline{#1}", 1],
+		    	mds: ["\\jleft\\lvert #1 \\jright\\rvert", 1],
+		    	mmds: ["\\jleft\| #1 \\jright\|", 1],
+		    }
 		  },
 		  svg: {
 		    fontCache: 'global'
@@ -474,7 +487,7 @@
 			console.log("run_timer start.");
 			await rebuild_views();
 			console.log("run_timer end.");
-			rebuilding_timer = setTimeout(run_timer, 2500);
+			rebuilding_timer = setTimeout(run_timer, 1000);
 		};
 		run_timer();
 
